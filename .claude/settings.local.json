@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(tree -L 3 -I 'node_modules' /Users/a-elnajjar/Documents/GitHub/quiz-app 2>/dev/null || find /Users/a-elnajjar/Documents/GitHub/quiz-app -not -path '*/node_modules/*' -type d | head -30)"
     ]
   }
 }
