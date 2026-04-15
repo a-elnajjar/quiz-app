@@ -6,7 +6,7 @@ import * as ReactRedux from 'react-redux';
 import './index.css';
 import AuthorQuiz from './AuthorQuiz';
 import AddAuthorForm from './AddAuthorForm';
-import registerServiceWorker from './registerServiceWorker';
+import { register as registerServiceWorker } from './serviceWorker';
 import {shuffle, sample} from 'underscore';
 
 const authors = [
@@ -66,24 +66,34 @@ function getTurnData(authors) {
 }
 
 function reducer(
-  state = { authors, turnData: getTurnData(authors), highlight: '' }, 
+  state = { authors, turnData: getTurnData(authors), highlight: '', score: { correct: 0, total: 0 } },
   action) {
     switch (action.type) {
       case 'ANSWER_SELECTED':
         const isCorrect = state.turnData.author.books.some((book) => book === action.answer);
         return Object.assign(
-          {}, 
-          state, { 
-            highlight: isCorrect ? 'correct' : 'wrong'
+          {},
+          state, {
+            highlight: isCorrect ? 'correct' : 'wrong',
+            score: {
+              correct: state.score.correct + (isCorrect ? 1 : 0),
+              total: state.score.total + 1
+            }
           });
-      case 'CONTINUE': 
-          return Object.assign({}, state, { 
+      case 'CONTINUE':
+          return Object.assign({}, state, {
             highlight: '',
             turnData: getTurnData(state.authors)
           });
       case 'ADD_AUTHOR':
           return Object.assign({}, state, {
             authors: state.authors.concat([action.author])
+          });
+      case 'RESET_GAME':
+          return Object.assign({}, state, {
+            highlight: '',
+            score: { correct: 0, total: 0 },
+            turnData: getTurnData(state.authors)
           });
       default: return state;
     }

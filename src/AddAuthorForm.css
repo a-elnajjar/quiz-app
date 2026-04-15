@@ -10,3 +10,10 @@
 .AddAuthorForm__input > label {
     display: block;
 }
+
+.AddAuthorForm__error {
+    color: #c0392b;
+    font-size: 0.85em;
+    display: block;
+    margin-top: 4px;
+}

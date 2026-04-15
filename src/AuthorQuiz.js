@@ -55,11 +55,33 @@ Turn.propTypes = {
 function Continue({ show, onContinue }) {
   return (
     <div className="row continue">
-    { show 
+    { show
       ? <div className="col-11">
           <button className="btn btn-primary btn-lg float-right" onClick={onContinue}>Continue</button>
         </div>
       : null }
+    </div>
+  );
+}
+
+function Score({ correct, total }) {
+  return (
+    <div className="row score">
+      <div className="col-12 text-right">
+        <span className="score__text">{correct} / {total} correct</span>
+      </div>
+    </div>
+  );
+}
+
+function GameOver({ score, onResetGame }) {
+  return (
+    <div className="row game-over">
+      <div className="col-8 offset-2 text-center">
+        <h2>Game Over</h2>
+        <p>You got <strong>{score.correct}</strong> out of <strong>{score.total}</strong> correct!</p>
+        <button className="btn btn-primary btn-lg" onClick={onResetGame}>Play Again</button>
+      </div>
     </div>
   );
 }
@@ -74,10 +96,13 @@ function Footer() {
   </div>);
 }
 
+const GAME_LENGTH = 10;
+
 function mapStateToProps(state) {
   return {
     turnData: state.turnData,
-    highlight: state.highlight
+    highlight: state.highlight,
+    score: state.score
   };
 }
 
@@ -88,17 +113,25 @@ function mapDispatchToProps(dispatch) {
     },
     onContinue: () => {
       dispatch({ type: 'CONTINUE' });
+    },
+    onResetGame: () => {
+      dispatch({ type: 'RESET_GAME' });
     }
   };
 }
 
 const AuthorQuiz = connect(mapStateToProps, mapDispatchToProps)(
-  function ({turnData, highlight, onAnswerSelected, onContinue}) {
+  function ({turnData, highlight, score, onAnswerSelected, onContinue, onResetGame}) {
+    const isGameOver = score.total >= GAME_LENGTH;
     return (
       <div className="container-fluid">
         <Hero />
-        <Turn {...turnData} highlight={highlight} onAnswerSelected={onAnswerSelected} />
-        <Continue show={highlight === 'correct'} onContinue={onContinue}/>
+        <Score correct={score.correct} total={score.total} />
+        {isGameOver
+          ? <GameOver score={score} onResetGame={onResetGame} />
+          : <Turn {...turnData} highlight={highlight} onAnswerSelected={onAnswerSelected} />
+        }
+        {!isGameOver && <Continue show={highlight === 'correct'} onContinue={onContinue}/>}
         <p><Link to="/add">Add an author</Link></p>
         <Footer />
       </div>
