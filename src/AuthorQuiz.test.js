@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import AuthorQuiz from './AuthorQuiz';
+import { MemoryRouter } from 'react-router-dom';
+import { AuthorQuiz } from './AuthorQuiz';
 import Enzyme, {mount, shallow, render} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 Enzyme.configure({ adapter: new Adapter() });
@@ -21,13 +22,22 @@ const state = {
 describe("Author Quiz", () => {
     it("renders without crashing", () => {
         const div = document.createElement("div");
-        ReactDOM.render(<AuthorQuiz {...state} onAnswerSelected={()=>{}} />, div);
+        ReactDOM.render(
+            <MemoryRouter>
+                <AuthorQuiz {...state} onAnswerSelected={()=>{}} />
+            </MemoryRouter>,
+            div
+        );
     });
 
     describe("When no answer has been selected", ()=>{
         let wrapper;
         beforeAll(()=> {
-            wrapper = mount(<AuthorQuiz {...state} onAnswerSelected={()=> {}}/>);
+            wrapper = mount(
+                <MemoryRouter>
+                    <AuthorQuiz {...state} onAnswerSelected={()=> {}}/>
+                </MemoryRouter>
+            );
         });
 
         it("should have no background color", () => {
@@ -40,7 +50,9 @@ describe("Author Quiz", () => {
     
         beforeAll(() => {
           wrapper = mount(
-            <AuthorQuiz {...(Object.assign({}, state, {highlight: 'wrong'}))} onAnswerSelected={()=>{}} />);
+            <MemoryRouter>
+                <AuthorQuiz {...(Object.assign({}, state, {highlight: 'wrong'}))} onAnswerSelected={()=>{}} />
+            </MemoryRouter>);
         });
     
         it('should have a red background color', () => {
@@ -53,7 +65,9 @@ describe("Author Quiz", () => {
     
         beforeAll(() => {
           wrapper = mount(
-            <AuthorQuiz {...(Object.assign({}, state, {highlight: 'correct'}))} onAnswerSelected={()=>{}} />);
+            <MemoryRouter>
+                <AuthorQuiz {...(Object.assign({}, state, {highlight: 'correct'}))} onAnswerSelected={()=>{}} />
+            </MemoryRouter>);
         });
     
         it('should have a green background color', () => {
@@ -67,7 +81,9 @@ describe("Author Quiz", () => {
 
           beforeAll(()=>{
             wrapper = mount(
-                <AuthorQuiz {...state} onAnswerSelected={handleAnswerSelected} />);
+                <MemoryRouter>
+                    <AuthorQuiz {...state} onAnswerSelected={handleAnswerSelected} />
+                </MemoryRouter>);
             wrapper.find('.answer').first().simulate('click');    
           });
 

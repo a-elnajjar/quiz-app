@@ -6,7 +6,7 @@ import * as ReactRedux from 'react-redux';
 import './index.css';
 import AuthorQuiz from './AuthorQuiz';
 import AddAuthorForm from './AddAuthorForm';
-import registerServiceWorker from './registerServiceWorker';
+import * as serviceWorker from './serviceWorker';
 import {shuffle, sample} from 'underscore';
 
 const authors = [
@@ -104,4 +104,4 @@ ReactDOM.render(
     </ReactRedux.Provider>
   </BrowserRouter>, document.getElementById('root'));
 
-registerServiceWorker();
+serviceWorker.unregister();
