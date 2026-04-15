@@ -131,7 +131,7 @@ const AuthorQuiz = connect(mapStateToProps, mapDispatchToProps)(
           ? <GameOver score={score} onResetGame={onResetGame} />
           : <Turn {...turnData} highlight={highlight} onAnswerSelected={onAnswerSelected} />
         }
-        {!isGameOver && <Continue show={highlight === 'correct'} onContinue={onContinue}/>}
+        {!isGameOver && <Continue show={highlight !== "" && highlight !== "none"} onContinue={onContinue}/>}
         <p><Link to="/add">Add an author</Link></p>
         <Footer />
       </div>

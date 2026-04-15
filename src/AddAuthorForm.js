@@ -1,6 +1,23 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import "./AddAuthorForm.css";
+import Ajv from 'ajv';
+import addFormats from 'ajv-formats';
+
+const ajv = new Ajv({ allErrors: true });
+addFormats(ajv);
+
+const schema = {
+    type: 'object',
+    properties: {
+        name: { type: 'string' },
+        imageUrl: { type: 'string', format: 'uri' },
+        books: { type: 'array', items: { type: 'string' }, minItems: 1 }
+    },
+    required: ['name', 'imageUrl', 'books']
+};
+
+const validate = ajv.compile(schema);
 
 class AuthorForm extends React.Component {
     constructor(props) {
@@ -19,9 +36,23 @@ class AuthorForm extends React.Component {
 
     validate() {
         const errors = {};
-        if (!this.state.name.trim()) errors.name = 'Name is required';
-        if (!this.state.imageUrl.trim()) errors.imageUrl = 'Image URL is required';
-        if (this.state.books.length === 0) errors.books = 'At least one book is required';
+
+        const payload = {
+            name:     this.state.name.trim(),
+            imageUrl: this.state.imageUrl.trim(),
+            books:    this.state.books.map(b => b.trim()).filter(b => b.length > 0)
+        };
+
+        const valid = validate(payload);
+        if (!valid) {
+            validate.errors.forEach(err => {
+                if (err.instancePath === '/name')     errors.name = 'Name is required';
+                if (err.instancePath === '/imageUrl') errors.imageUrl = 'Must be a valid URL';
+                if (err.instancePath === '/books')    errors.books = 'At least one book is required';
+                if (err.instancePath.startsWith('/books/')) errors.books = 'Book titles cannot be empty';
+            });
+        }
+
         return errors;
     }
 

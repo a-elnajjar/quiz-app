@@ -70,6 +70,7 @@ function reducer(
   action) {
     switch (action.type) {
       case 'ANSWER_SELECTED':
+        if (state.highlight !== '') return state;
         const isCorrect = state.turnData.author.books.some((book) => book === action.answer);
         return Object.assign(
           {},
